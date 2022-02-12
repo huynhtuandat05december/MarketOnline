@@ -33,7 +33,7 @@ async function handler(
   });
   if (phone) {
     const message = await twilioClient.messages.create({
-      from: "+18507619924",
+      from: process.env.MY_PHONE,
       to: `+84${phone}`,
       body: `Your login token is ${payload}.`,
     });
