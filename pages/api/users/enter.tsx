@@ -3,7 +3,6 @@ import {
   NextApiResponse,
 } from 'next';
 
-import twilioClient from '@/config/twilio';
 import client from '@/libs/server/client';
 import withHandler from '@/libs/server/withHandler';
 import { ResponseType } from '@/models/auth';
@@ -32,12 +31,19 @@ async function handler(
     },
   });
   if (phone) {
-    const message = await twilioClient.messages.create({
-      from: process.env.MY_PHONE,
-      to: `+84${phone}`,
-      body: `Your login token is ${payload}.`,
-    });
-    console.log(message);
+    // await twilioClient.messages.create({
+    //   from: process.env.MY_PHONE,
+    //   to: `+84${phone}`,
+    //   body: `Your login token is ${payload}.`,
+    // });
+  } else if (email) {
+    // await mail.send({
+    //   from: "carrotmarket512@gmail.com",
+    //   to: email,
+    //   subject: "Your Carrot Market Verification Email",
+    //   text: `Your token is ${payload}`,
+    //   html: `<strong>Your token is ${payload}</strong>`,
+    // });
   }
   return res.json({
     data: {},

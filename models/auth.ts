@@ -8,3 +8,7 @@ export interface ResponseType {
   errDetail?: string | null;
   errCode?: number | null;
 }
+
+export interface TokenForm {
+  token: string;
+}
