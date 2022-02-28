@@ -1,18 +1,17 @@
-import { useState } from 'react';
+import { EnterForm, TokenForm } from "@/models/auth";
 
-import type { NextPage } from 'next';
-import { useForm } from 'react-hook-form';
-
-import Button from '@/components/button';
-import Input from '@/components/form/input';
-import useMutation from '@/hooks/useMutation';
-import { cls } from '@/libs/client/utils';
-import {
-  EnterForm,
-  TokenForm,
-} from '@/models/auth';
+import Button from "@/components/button";
+import Input from "@/components/form/input";
+import type { NextPage } from "next";
+import { cls } from "@/libs/client/utils";
+import handleCallApi from "@/libs/client/callApi";
+import { useAuth } from "@/hooks/useAuth";
+import { useForm } from "react-hook-form";
+import { useRouter } from "next/router";
+import { useState } from "react";
 
 const Enter: NextPage = () => {
+  const { mutate } = useAuth();
   const { register, handleSubmit, reset } = useForm<EnterForm>();
   const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =
     useForm<TokenForm>();
@@ -20,6 +19,7 @@ const Enter: NextPage = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [success, setSuccess] = useState<boolean>(false);
   const [tokenLoading, setTokenLoading] = useState<boolean>(false);
+  const router = useRouter();
 
   const onEmailClick = () => {
     reset();
@@ -34,7 +34,7 @@ const Enter: NextPage = () => {
   const onSubmit = async (value: EnterForm) => {
     if (loading) return;
     setLoading(true);
-    const { data, errDetail, errCode } = await useMutation(
+    const { errDetail, errCode } = await handleCallApi(
       "/users/enter",
       "POST",
       value
@@ -44,6 +44,7 @@ const Enter: NextPage = () => {
       console.log(errDetail);
       return;
     }
+
     setLoading(false);
     setSuccess(true);
   };
@@ -51,7 +52,7 @@ const Enter: NextPage = () => {
   const onTokenValid = async (value: TokenForm) => {
     if (tokenLoading) return;
     setTokenLoading(true);
-    const { data, errDetail, errCode } = await useMutation(
+    const { errDetail, errCode } = await handleCallApi(
       "/users/confirm",
       "POST",
       value
@@ -62,13 +63,15 @@ const Enter: NextPage = () => {
       return;
     }
     setTokenLoading(false);
+    mutate();
+    router.push("/");
   };
 
   return (
     <div className="mt-16 px-4">
       <h3 className="text-3xl font-bold text-center">Enter to Carrot</h3>
       <div className="mt-12">
-        {true ? (
+        {success ? (
           <form
             onSubmit={tokenHandleSubmit(onTokenValid)}
             className="flex flex-col mt-8 space-y-4"

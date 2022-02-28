@@ -1,22 +1,18 @@
-import { ResponseType } from '@/models/auth';
-import axiosClient from '@/services/axios';
+import { ResponseType } from "@/models/auth";
+import axiosClient from "@/config/axios";
 
-export default async function useMutation(
+export default async function handleCallApi(
   url: string,
   method: "GET" | "POST" | "DELETE",
   body: any
 ): Promise<ResponseType> {
   try {
-    const res = await axiosClient({
+    const data = await axiosClient({
       url,
       method,
       data: body,
     });
-    return {
-      data: res,
-      errDetail: null,
-      errCode: null,
-    };
+    return data;
   } catch (error) {
     return {
       errCode: 1,

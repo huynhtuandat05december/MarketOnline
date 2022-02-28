@@ -3,8 +3,6 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { ResponseType } from "@/models/auth";
 import client from "@/libs/server/client";
 import { withApiSession } from "@/libs/server/withSession";
-import withHandler from "@/libs/server/withHandler";
-import { withIronSessionApiRoute } from "iron-session/next";
 
 declare module "iron-session" {
   interface IronSessionData {
@@ -18,27 +16,13 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  const { token } = req.body;
-  const existsToken = await client.token.findUnique({
-    where: {
-      payload: token,
-    },
+  const profile = await client.user.findUnique({
+    where: { id: req.session.user?.id },
   });
-  if (!existsToken) {
-    return res.json({
-      errCode: 1,
-      errDetail: "Token is not exists",
-      data: {},
-    });
-  }
-  req.session.user = {
-    id: existsToken?.userId,
-  };
-  await req.session.save();
-  return res.json({
+  res.json({
     errCode: null,
     errDetail: null,
-    data: {},
+    data: profile,
   });
 }
 
