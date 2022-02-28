@@ -1,24 +1,36 @@
-import type { NextPage } from 'next';
+import FloatingButton from "@/components/floatingButton";
+import Head from "next/head";
+import Item from "@/components/item";
+import Layout from "@/components/layout";
+import type { NextPage } from "next";
+import { Product } from "@prisma/client";
+import useSWR from "swr";
 
-import FloatingButton from '@/components/floatingButton';
-import Item from '@/components/item';
-import Layout from '@/components/layout';
+interface ProductsResponse {
+  errDetail?: string | null;
+  errCode?: number | null;
+  data: Product[];
+}
 
 const Home: NextPage = () => {
+  const { data } = useSWR<ProductsResponse>("/products");
   return (
     <Layout title="홈" hasTabBar>
+      <Head>
+        <title>Home</title>
+      </Head>
       <div className="flex flex-col space-y-5 divide-y">
-        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
+        {data?.data.map((product) => (
           <Item
-            id={i}
-            key={i}
-            title="iPhone 14"
-            price={99}
+            id={product.id}
+            key={product.id}
+            title={product.name}
+            price={product.price}
             comments={1}
             hearts={1}
           />
         ))}
-        <FloatingButton href="/items/upload">
+        <FloatingButton href="/products/upload">
           <svg
             className="h-6 w-6"
             xmlns="http://www.w3.org/2000/svg"

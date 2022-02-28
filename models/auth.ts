@@ -4,7 +4,7 @@ export interface EnterForm {
 }
 
 export interface ResponseType {
-  data?: object | null;
+  data?: any;
   errDetail?: string | null;
   errCode?: number | null;
 }

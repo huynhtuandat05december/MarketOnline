@@ -63,7 +63,7 @@ const Enter: NextPage = () => {
       return;
     }
     setTokenLoading(false);
-    mutate();
+    await mutate();
     router.push("/");
   };
 

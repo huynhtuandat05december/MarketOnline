@@ -4,7 +4,6 @@ import { ResponseType } from "@/models/auth";
 import client from "@/libs/server/client";
 import { withApiSession } from "@/libs/server/withSession";
 import withHandler from "@/libs/server/withHandler";
-import { withIronSessionApiRoute } from "iron-session/next";
 
 declare module "iron-session" {
   interface IronSessionData {
@@ -42,4 +41,4 @@ async function handler(
   });
 }
 
-export default withApiSession(handler);
+export default withApiSession(withHandler(["POST"], handler));
